@@ -1,6 +1,6 @@
 import React from "react";
 
-import Gamification from "./Gamification";
+
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import StatsDashboard from "./StatsDashboard";
@@ -15,17 +15,17 @@ const DashContent = () => {
         <Navbar />
         <StatsDashboard />
         <TaskAdmin />
-        <Gamification />
+      
 
       </div>
     </div>
   );
 };
 
-const DashboradEmloyee = () => {
+const DashboardEmloyee = () => {
   return (
       <DashContent />
   );
 };
 
-export default DashboradEmloyee;
+export default DashboardEmloyee;

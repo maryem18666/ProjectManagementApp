@@ -1,22 +1,22 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { io } from "socket.io-client";
+
 
 import AddClient from "./components/AddClient";
 import AddProject from "./components/AddProject";
 import AddTask from "./components/AddTask";
 import AddTaskAdmin from "./components/AddTaskAdmin";
 import Clients from "./components/Client";
-import DashboradEmloyee from "./components/DashboradEmloyee";
+import DashboardEmloyee from "./components/DashboardEmloyee";
 import Footer from "./components/Footer";
 import Gamification from "./components/Gamification";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Dash from "./components/HomeAdmin";
 import Login from "./components/Login";
-import Messages from "./components/Message";
+
 import Navbar from "./components/Navbar";
-import Notes from "./components/Note";
+
 import Profile from "./components/profile";
 import Projectbar from "./components/Projectbar";
 import ProjectList from "./components/ProjectList";
@@ -27,28 +27,13 @@ import Tasks from './components/tasktotal';
 import TaskAdmin from "./components/Taskadmin";
 import TaskTableAdmin from './components/TaskTableAdmin';
 import UpdateProject from "./components/UpdateProject";
-import { MessageProvider } from "./context/MessageContext"; 
 
 const userId = "67913e1f55ead5e532726e9b"; // Remplace par l'ID de l'utilisateur connecté
 
 
-const socket = io("http://localhost:3000", {
-  transports: ["websocket", "polling"], // Permet de gérer plusieurs types de connexion
-  reconnectionAttempts: 5, // Réessayer en cas d'échec
-  reconnectionDelay: 1000, // Attendre 1 seconde entre chaque tentative
-});
-
-socket.on("connect", () => {
-  console.log("✅ Connecté au WebSocket !");
-});
-
-socket.on("connect_error", (error) => {
-  console.error("❌ Erreur de connexion WebSocket :", error);
-});
-
 function App() {
   return (
-    <MessageProvider>
+
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -57,7 +42,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/Dash" element={<Dash />} />
-          <Route path="/DashEmployee" element={<DashboradEmloyee />} />
+          <Route path="/DashEmployee" element={<DashboardEmloyee />} />
           <Route path="/Header" element={<Header />} />
           <Route path="/projects" element={<ProjectList />} />
           <Route path="/projects/add" element={<AddProject />} />
@@ -72,13 +57,13 @@ function App() {
           <Route path="/tasktableadmin" element={<TaskTableAdmin />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/clients/add" element={<AddClient />} />
-          <Route path="/notes" element={<Notes />} />
-          <Route path="/messages" element={<Messages socket={socket} userId={userId} />} />
+ 
+        
           <Route path="/projectsbar" element={<Projectbar />} />
           <Route path="/gamification" element={<Gamification />} />
         </Routes>
       </Router>
-      </MessageProvider>
+ 
   );
 }
 

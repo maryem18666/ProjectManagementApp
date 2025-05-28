@@ -15,7 +15,7 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
 
 const WorkloadChart = () => {
   const [tasks, setTasks] = useState([]);
-  const [users, setUsers] = useState([]);
+
   const [loading, setLoading] = useState(true); // État de chargement
   const [error, setError] = useState(null); // État d'erreur
 
@@ -26,7 +26,7 @@ const WorkloadChart = () => {
         const projectResponse = await API.get("/projects"); 
   
         const allUsers = userResponse.data || [];  
-        setUsers(allUsers); 
+       
   
         const allTasks = projectResponse.data.flatMap(project => project.tasks);
         

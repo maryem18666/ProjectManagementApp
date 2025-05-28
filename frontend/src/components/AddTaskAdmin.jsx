@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API from "../services/api";
-import TaskPriority from './TaskPriority'; 
+
 import { useNavigate } from "react-router-dom";
 
 function AddTaskAdmin({ onTaskAdded }) { // onTaskAdded est une fonction pour rafraîchir la liste des tâches
@@ -30,20 +30,23 @@ function AddTaskAdmin({ onTaskAdded }) { // onTaskAdded est une fonction pour ra
     
 
     try {
-      await API.post("/taskstotal", newTask);
+      await API.post("/taskstotal", newTask);;
+      
       alert("Tâche ajoutée avec succès !");
-      if (onTaskAdded) onTaskAdded(); // Rafraîchir la liste des tâches
-      navigate("/taskstotal"); // Rediriger vers la liste des tâches
+      if (onTaskAdded) onTaskAdded(); // Rafraîchir la liste
+      setTimeout(() => navigate("/taskstotal"), 0); // Délai minimal pour laisser React terminer
     } catch (error) {
-      console.error("Erreur lors de l'ajout de la tâche :", error);
-      alert("Erreur lors de l'ajout de la tâche");
+      console.error("Erreur :", error);
+      alert("Erreur lors de l'ajout");
     }
   };
 
   useEffect(() => {
+    let isMounted = true;
     const fetchUsers = async () => {
       try {
         const response = await API.get("/getall");
+        if (isMounted) setUsers(response.data);
         setUsers(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des utilisateurs :", error);
@@ -51,6 +54,9 @@ function AddTaskAdmin({ onTaskAdded }) { // onTaskAdded est une fonction pour ra
     };
 
     fetchUsers();
+    return () => {
+      isMounted = false; // Nettoyage
+    };
   }, []);
 
   return (
@@ -90,13 +96,7 @@ function AddTaskAdmin({ onTaskAdded }) { // onTaskAdded est une fonction pour ra
             ))}
           </select>
         </div>
-        <div className="mb-3">
-          <label htmlFor="priority" className="form-label">Priorité</label>
-          <TaskPriority 
-            priority={form.priority} 
-            onChange={handleChange} // Assurez-vous que TaskPriority peut recevoir et gérer cette valeur
-          />
-        </div>
+   
 
         <div className="d-grid gap-2">
           <button type="submit" className="btn btn-success">Ajouter la tâche</button>

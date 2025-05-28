@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import TaskPriority from './TaskPriority';  // Assurez-vous que ce composant existe
 import { useNavigate } from 'react-router-dom';
 
 const AddTask = ({ onTaskAdded }) => {
@@ -88,13 +87,7 @@ const AddTask = ({ onTaskAdded }) => {
           />
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="priority" className="form-label">Priorité</label>
-          <TaskPriority 
-            priority={task.priority} 
-            onChange={handleChange} // Assurez-vous que TaskPriority peut recevoir et gérer cette valeur
-          />
-        </div>
+        
 
         <button type="submit" className="btn btn-success">Ajouter la tâche</button>
       </form>

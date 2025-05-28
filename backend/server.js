@@ -1,9 +1,9 @@
-
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const User = require("./models/signup");
-const Client=require("./models/client");
+
+const Client = require("./models/client");
 const projectRoutes = require("./routes/projectRoutes");
 const clientRoutes = require("./routes/clientRoutes");
 const messagesRoutes = require("./routes/messages");
@@ -11,65 +11,8 @@ const taskRoutes = require("./routes/taskRoutes");
 const noteRoutes = require("./routes/notes");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-/*const app = express();*/
-
-const http = require("http");
-const socketIo = require("socket.io");
-
-/*const nodemailer = require("nodemailer");
-
-// Configuration de Nodemailer
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER, // Ton email
-    pass: process.env.EMAIL_PASS, // Ton mot de passe (ou app password)
-  },
-});*/
 
 const app = express();
-
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "http://localhost:3000", 
-    methods: ["GET", "POST"],
-  },
-});
-
-app.set("socketio", io);
-io.on("connection", (socket) => {
-  console.log("Un utilisateur s'est connecté");
-
-  // Vérifier le token JWT lors de la connexion
-  socket.on("authenticate", (token) => {
-    if (!process.env.JWT_SECRET) {
-      console.error("JWT_SECRET non défini !");
-      return socket.disconnect();
-    }
-    
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.user = { id: decoded._id, email: decoded.email }; // Ne stocker que des infos nécessaires
-      console.log("Utilisateur authentifié :", decoded.email);
-    } catch (error) {
-      console.error("Échec de l'authentification WebSocket :", error.message);
-      socket.disconnect();
-    }
-  });
-  
-
-  socket.on("sendMessage", (message) => {
-    if (!socket.user) return; // Vérifier si l'utilisateur est authentifié
-
-    console.log("Message reçu :", message);
-    socket.broadcast.emit("receiveMessage", { user: socket.user.email, text: message });
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Un utilisateur s'est déconnecté");
-  });
-});
 
 app.use(cors());
 require("./config/connect");
@@ -87,8 +30,8 @@ app.post("/register", async (req, res) => {
     const data = req.body;
 
     const user = new User(data);
-    salt = bcrypt.genSaltSync(10);
-    cryptedPass = await bcrypt.hashSync(data.password, salt);
+    const salt = bcrypt.genSaltSync(10);
+    const cryptedPass = await bcrypt.hashSync(data.password, salt);
     user.password = cryptedPass;
     const savedUser = await user.save();
 
@@ -133,7 +76,6 @@ app.post("/login", async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET || "123456", {
       expiresIn: "1h", // Durée de validité du token : 1 heure
     });
- 
 
     // Répondre avec le token
     res.status(200).send({ mytoken: token });
@@ -157,7 +99,7 @@ app.post("/create", async (req, res) => {
 app.get("/getall", async (req, res) => {
   try {
     console.log("Requête reçue sur /getall");
-    
+
     const users = await User.find({}, "_id name email");
     console.log("Utilisateurs récupérés :", users);
 
@@ -169,58 +111,61 @@ app.get("/getall", async (req, res) => {
     res.json(allUsers);
     console.log("Réponse envoyée avec succès !");
   } catch (err) {
-    console.error("Erreur lors de la récupération des utilisateurs et clients:", err);
+    console.error(
+      "Erreur lors de la récupération des utilisateurs et clients:",
+      err
+    );
     res.status(500).json({ message: "Erreur serveur", error: err.message });
   }
 });
-
-
-/*app.get("/getall", (req, res) => {
-  User.find()
-    .then((users) => {
-      res.send(users);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
-  console.log("getall work");
-});*/
 
 app.put("/update", (req, res) => {
   console.log("update work");
 });
 
 // Route pour mettre à jour les paramètres utilisateur
-app.post('/updateSettings', async (req, res) => {
-  const { email, name, password, role } = req.body;
-
+app.post("/updateSettings", async (req, res) => {
   try {
-      // Rechercher l'utilisateur par email
-      const user = await User.findOne({ email });
-      if (!user) {
-          return res.status(404).json({ message: 'Utilisateur non trouvé' });
-      }
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
 
-      // Mettre à jour les informations
-      if (name) user.name = name;
-      if (role) user.role = role;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "123456");
+    const userId = decoded._id;
+    const { email, name, password } = req.body;
 
-      // Si un mot de passe est fourni, hacher le nouveau mot de passe
-      if (password) {
-          const salt = await bcrypt.genSalt(10);
-          user.password = await bcrypt.hash(password, salt);
-      }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
 
-      // Sauvegarder les modifications
-      await user.save();
+    // Mettre à jour les champs
+    if (email) user.email = email;
+    if (name) user.name = name;
 
-      res.status(200).json({ message: 'Paramètres mis à jour avec succès', user });
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    await user.save();
+    
+    // Ne pas renvoyer le mot de passe
+    user.password = undefined;
+    res.status(200).json({ 
+      message: "Paramètres mis à jour",
+      user 
+    });
+
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Erreur lors de la mise à jour des paramètres' });
+    console.error("Erreur updateSettings:", error);
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: "Token invalide" });
+    }
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
-
 
 
 app.listen(3000, () => {

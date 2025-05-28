@@ -26,8 +26,8 @@ const Home = () => {
 
       <div className="text-center text-white position-relative p-4">
         {/* Titre positionné en haut */}
-        <h1 className="display-4 fw-bold mb-4 mt-4">Bienvenue dans le Gestionnaire de Projets</h1>
-        <p className="lead mb-5">
+        <h1 className="display-5 fw-bold mb-4 mt-4">Bienvenue dans le Gestionnaire de Projets</h1>
+        <p className="lead mb-8">
           Cette application vous permet de gérer vos projets, vos tâches, et de
           collaborer efficacement avec votre équipe.
         </p>

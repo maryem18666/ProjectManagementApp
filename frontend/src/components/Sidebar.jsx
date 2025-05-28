@@ -1,5 +1,5 @@
 import React from "react";
-import { FaTasks, FaProjectDiagram, FaStickyNote, FaUsers, FaEnvelope, FaCogs } from "react-icons/fa";
+import { FaTasks, FaProjectDiagram,  FaUsers,  FaCogs } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 import './sidebar.css' ;
@@ -34,13 +34,6 @@ const Sidebar = ({ role }) => {
           </li>
           </>
         )}
-
-        <li className="nav-item mb-3">
-          <Link to="/notes" className="nav-link text-white d-flex align-items-center">
-            <FaStickyNote className="me-2" />
-            Mes Notes
-          </Link>
-        </li>
         
 
         {role === "admin" && (
@@ -54,18 +47,7 @@ const Sidebar = ({ role }) => {
           </>
         )}
 
-        <li className="nav-item mb-3">
-          <Link to="/messages" className="nav-link text-white d-flex align-items-center">
-            <FaEnvelope className="me-2" />
-            Messages
-          </Link>
-        </li>
-        <li className="nav-item mb-3">
-          <Link to="/settings" className="nav-link text-white d-flex align-items-center">
-            <FaCogs className="me-2" />
-            Paramètres
-          </Link>
-        </li>
+        
       </ul>
     </div>
   );

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Project = require("../models/Project");
 const User = require("../models/user");
+
 const mongoose = require("mongoose");
 
 // Route pour ajouter un projet
@@ -97,6 +98,17 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-
+// Route pour mettre à jour un projet existant
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedProject) {
+      return res.status(404).json({ message: "Projet non trouvé." });
+    }
+    res.json(updatedProject);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la mise à jour du projet." });
+  }
+});
 
 module.exports = router;

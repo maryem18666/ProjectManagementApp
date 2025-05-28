@@ -88,9 +88,7 @@ const Clients = () => {
                       >
                         Supprimer
                       </button>
-                      <Link to={`/clients/edit/${client._id}`} className="btn btn-warning">
-                        Modifier
-                      </Link>
+
                     </td>
                   </tr>
                 ))}

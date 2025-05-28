@@ -11,15 +11,16 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post("/login", form);
-      const token = res.data.mytoken; 
+      const res = await API.post("/login", form);//On envoie les données du formulaire au backend via POST /login
+      const token = res.data.mytoken; //On récupère le token envoyé en réponse (contenu dans res.data.mytoken)
+
   
       // Décoder le token
-      const decodedToken = jwtDecode(token);
+      const decodedToken = jwtDecode(token);//On décode le token JWT pour extraire les infos qu’il contient
       console.log("🚀 ~ handleSubmit ~ decodedToken:", decodedToken)
       const userRole = decodedToken.role; 
       console.log("🚀 ~ handleSubmit ~ userRole:", userRole)
-      const userId = decodedToken._id; // Assurez-vous que le token contient l'userId
+      const userId = decodedToken._id; 
       console.log("🚀 ~ handleSubmit ~ userId:", userId)
   
   
@@ -39,39 +40,6 @@ function Login() {
   };
   
 
-
-
-
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await API.post("/login", form);
-  //     const token = res.data.mytoken; // Assurez-vous que le token est bien dans res.data.mytoken
-
-  //     // Décoder le token pour obtenir les informations de l'utilisateur
-  //     const decodedToken = jwtDecode(token); // Utilisez jwtDecode ici
-  //     console.log("🚀 ~ handleSubmit ~ decodedToken:", decodedToken);
-  //     const userRole = decodedToken.role; // Récupérer le rôle de l'utilisateur
-  //     console.log("🚀 ~ handleSubmit ~ userRole:", userRole);
-
-  //     console.log("Rôle de l'utilisateur:", userRole);
-    
-  //     // Stocker le token dans le localStorage
-  //     localStorage.setItem("token", token);
-
-  //     alert("Connexion réussie !");
-  //     if (userRole === "admin") {
-  //       navigate("/Dash");
-  //     } else if (userRole === "user") {
-  //       navigate("/DashEmployee");
-  //     }
-  //     // navigate("/Dash");
-  //   } catch (error) {
-  //     alert("Erreur lors de la connexion");
-  //   }
-  // };
   return (
     <div className="container-fluid vh-100 d-flex">
       {/* Image à gauche */}

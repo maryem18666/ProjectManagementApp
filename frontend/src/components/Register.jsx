@@ -28,7 +28,7 @@ function Register() {
       <div
         className="col-lg-6 col-md-6 d-flex justify-content-center align-items-center"
         style={{
-          backgroundImage: "url('cardsignup.svg')", // Remplacez par l'URL de votre image
+          backgroundImage: "url('cardsignup.svg')", 
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           height: '100%',
